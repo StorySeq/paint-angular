@@ -22,7 +22,7 @@ gulp.task('injector:css:preprocessor', function () {
     .pipe($.inject(gulp.src([
         'src/{app,components}/**/*.scss',
         '!src/app/index.scss',
-        '!src/app/vendor.scss' 
+        '!src/app/vendor.scss'
       ], {read: false}), {
       transform: function(filePath) {
         filePath = filePath.replace('src/app/', '');
@@ -42,7 +42,8 @@ gulp.task('injector:css', ['styles'], function () {
         '.tmp/{app,components}/**/*.css',
         '!.tmp/app/vendor.css'
       ], {read: false}), {
-      ignorePath: '.tmp',
+      // ignorePath: '.tmp',
+      addPrefix: '..',
       addRootSlash: false
     }))
     .pipe(gulp.dest('src/'));
