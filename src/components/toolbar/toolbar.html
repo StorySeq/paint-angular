@@ -12,6 +12,12 @@
       ng-class="{'btn-primary': settings.mode == 'line', 'btn-default': settings.mode != 'line'}">
       <i class="fa fa-minus"></i>
     </button>
+    <button
+      class="btn"
+      ng-click="activate('rectangle')"
+      ng-class="{'btn-primary': settings.mode == 'rectangle', 'btn-default': settings.mode != 'rectangle'}">
+      <i class="fa fa-square-o"></i>
+    </button>
     <button class="btn btn-default"><i class="fa fa-undo"></i></button>
   </div>
 </div>

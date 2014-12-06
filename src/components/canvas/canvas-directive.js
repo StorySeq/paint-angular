@@ -4,7 +4,8 @@ angular.module('paintAngular')
 .directive('canvasDirective', [
   'pencilService',
   'lineService',
-  function(pencilService, lineService) {
+  'rectangleService',
+  function(pencilService, lineService, rectangleService) {
     return {
       restrict: 'A',
       scope: {
@@ -23,7 +24,8 @@ angular.module('paintAngular')
 
         var modeServices = {
           'pencil': pencilService,
-          'line': lineService
+          'line': lineService,
+          'rectangle': rectangleService
         };
 
         var modeDefaults = {
@@ -34,6 +36,9 @@ angular.module('paintAngular')
             'lineCap': 'round'
           },
           'shape': {
+
+          },
+          'rectangle': {
 
           }
         };
