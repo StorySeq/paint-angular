@@ -18,6 +18,18 @@
       ng-class="{'btn-primary': settings.mode == 'rectangle', 'btn-default': settings.mode != 'rectangle'}">
       <i class="fa fa-square-o"></i>
     </button>
+    <button
+      class="btn"
+      ng-click="activate('ellipse')"
+      ng-class="{'btn-primary': settings.mode == 'ellipse', 'btn-default': settings.mode != 'ellipse'}">
+      <i class="fa fa-circle-o"></i>
+    </button>
+    <button
+      class="btn"
+      ng-click="activate('eraser')"
+      ng-class="{'btn-primary': settings.mode == 'eraser', 'btn-default': settings.mode != 'eraser'}">
+      <i class="fa fa-eraser"></i>
+    </button>
     <button class="btn btn-default"><i class="fa fa-undo"></i></button>
   </div>
 </div>

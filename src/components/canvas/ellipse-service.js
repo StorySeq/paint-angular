@@ -1,6 +1,6 @@
 
 angular.module('paintAngular')
-.service('rectangleService', [
+.service('ellipseService', [
   'shapeService',
   function(shapeService) {
     return function(canvasLayers, options) {
@@ -14,7 +14,7 @@ angular.module('paintAngular')
         move: function (pageX, pageY) {
           var calc = shape.move(pageX, pageY);
 
-          ctxTemp.rect(calc.x, calc.y, calc.w, calc.h);
+          ctxTemp.ellipse(calc.x, calc.y, calc.w, calc.h);
           ctxTemp.stroke();
           ctxTemp.fill();
         },

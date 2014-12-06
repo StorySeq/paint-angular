@@ -5,7 +5,9 @@ angular.module('paintAngular')
   'pencilService',
   'lineService',
   'rectangleService',
-  function(pencilService, lineService, rectangleService) {
+  'ellipseService',
+  'eraserService',
+  function(pencilService, lineService, rectangleService, ellipseService, eraserService) {
     return {
       restrict: 'A',
       scope: {
@@ -25,7 +27,9 @@ angular.module('paintAngular')
         var modeServices = {
           'pencil': pencilService,
           'line': lineService,
-          'rectangle': rectangleService
+          'rectangle': rectangleService,
+          'ellipse': ellipseService,
+          'eraser': eraserService
         };
 
         var modeDefaults = {
@@ -35,13 +39,12 @@ angular.module('paintAngular')
             'lineJoin': 'round',
             'lineCap': 'round'
           },
-          'shape': {
-
-          },
-          'rectangle': {
-
-          }
+          'shape': {},
+          'rectangle': {},
+          'ellipse': {}
         };
+
+        modeDefaults.eraser = modeDefaults.pencil
 
         el.width(width);
         el.height(height);
