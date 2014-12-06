@@ -12,5 +12,26 @@
     width: 50px;
   }
 }
+
+.jumbotron {
+  margin-top: 15px;
+}
+
+.canvas-container {
+  position: relative;
+  width: 100%;
+  margin: 70px auto 20px;
+
+  .canvas {
+    border: 1px solid;
+  }
+
+  canvas {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+}
+
 // injector
 // endinjector

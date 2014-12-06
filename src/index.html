@@ -10,6 +10,7 @@
     <!-- build:css({.tmp,src}) styles/vendor.css -->
     <link rel="stylesheet" href="../.tmp/app/vendor.css">
     <!-- bower:css -->
+    <link rel="stylesheet" href="../bower_components/fontawesome/css/font-awesome.css" />
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -60,6 +61,7 @@
     <script src="../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/modal.js"></script>
     <script src="../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip.js"></script>
     <script src="../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/popover.js"></script>
+    <script src="../bower_components/lodash/dist/lodash.compat.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -68,6 +70,12 @@
     <script src="app/index.js"></script>
     <script src="app/main/main.controller.js"></script>
     <script src="components/navbar/navbar.controller.js"></script>
+    <script src="components/toolbar/toolbar-directive.js"></script>
+    <script src="components/canvas/canvas-directive.js"></script>
+
+    <script src="components/canvas/pencil-service.js"></script>
+    <script src="components/canvas/shape-service.js"></script>
+    <script src="components/canvas/line-service.js"></script>
     <!-- endinject -->
 
     <!-- inject:partials -->
