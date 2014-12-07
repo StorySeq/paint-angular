@@ -6,7 +6,8 @@ angular.module('paintAngular')
     return {
       restrict: 'A',
       scope: {
-        settings: '='
+        settings: '=',
+        history: '='
       },
       templateUrl: 'components/toolbar/toolbar.html',
       link: function(scope, el, attr) {
@@ -16,6 +17,10 @@ angular.module('paintAngular')
             return;
           }
           scope.settings.mode = type;
+        };
+
+        scope.goHistory = function(direction) {
+          scope.$emit('toolbar-directive-' + direction);
         };
       }
     }
