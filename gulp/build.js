@@ -140,7 +140,7 @@ gulp.task('misc', function () {
 });
 
 gulp.task('clean', function (done) {
-  $.del(['dist/', '.tmp/'], done);
+  $.del(['dist/', '.tmp/', 'dist_concat/'], done);
 });
 
 gulp.task('build', ['html', 'images', 'fonts', 'misc']);
