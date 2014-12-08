@@ -3,11 +3,20 @@ angular.module('paintAngular')
 .service('ellipseService', [
   'shapeService',
   function(shapeService) {
-    return function(canvasLayers, options) {
-      var ctxTemp = canvasLayers.canvasTemp.ctx;
-      var shape = shapeService(canvasLayers, options);
+    return function(canvasLayers, toolSettings) {
+      var ctxTemp = canvasLayers.canvasTemp.ctx,
+          optionDefaults = {
+            'lineColor': '#000000',
+            'fillColor': '#000000',
+            'lineWidth': '3'
+          },
+          options = {},
+          shape;
+
       return {
         start: function (pageX, pageY) {
+          _.merge(options, optionDefaults, toolSettings);
+          shape = shapeService(canvasLayers, options),
           shape.start(pageX, pageY);
         },
 

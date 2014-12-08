@@ -11,7 +11,8 @@ angular.module('paintAngular')
     return {
       restrict: 'A',
       scope: {
-        settings: '='
+        settings: '=',
+        toolSettings: '='
       },
       link: function(scope, el, attr) {
         if (!scope.settings.width) throw new Error('width missing');
@@ -107,7 +108,7 @@ angular.module('paintAngular')
             throw new Error('Unknown mode: ' + mode);
           }
           var options = _.merge({}, modeDefaults[mode], scope.settings.options),
-              modeService = modeServices[mode](canvasLayers, options);
+              modeService = modeServices[mode](canvasLayers, scope.toolSettings);
 
           $canvas.on('mousedown touchstart', function(e) {
 
@@ -121,6 +122,7 @@ angular.module('paintAngular')
               modeService.stop();
               $(document).off('mousemove touchmove mouseup touchend');
               scope.$emit('canvas-directive-new-drawing', getImage(false));
+              scope.$apply();
             });
           });
         };

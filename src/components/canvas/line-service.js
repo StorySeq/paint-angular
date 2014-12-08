@@ -3,11 +3,21 @@ angular.module('paintAngular')
 .service('lineService', [
   'shapeService',
   function(shapeService) {
-    return function(canvasLayers, options) {
-      var ctxTemp = canvasLayers.canvasTemp.ctx;
-      var shape = shapeService(canvasLayers, options);
+    return function(canvasLayers, toolSettings) {
+      var ctxTemp = canvasLayers.canvasTemp.ctx,
+          optionDefaults = {
+            'lineColor': '#000000',
+            'fillColor': '#000000',
+            'lineWidth': '3',
+            'lineJoin': 'round'
+          },
+          options = {},
+          shape;
+
       return {
         start: function (pageX, pageY) {
+          options = _.merge({}, optionDefaults, toolSettings);
+          shape = shapeService(canvasLayers, options);
           shape.start(pageX, pageY);
         },
 
@@ -20,7 +30,7 @@ angular.module('paintAngular')
           if (pageX < xo) { calc.x = calc.x + calc.w; calc.w = calc.w * - 1; }
           if (pageY < yo) { calc.y = calc.y + calc.h; calc.h = calc.h * - 1; }
 
-          ctxTemp.lineJoin = 'round';
+          ctxTemp.lineJoin = options.lineJoin;
           ctxTemp.beginPath();
           ctxTemp.moveTo(calc.x, calc.y);
           ctxTemp.lineTo(calc.x + calc.w, calc.y + calc.h);

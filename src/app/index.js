@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('paintAngular', ['ngTouch', 'ngSanitize', 'ui.router'])
+angular.module('paintAngular', ['ngTouch', 'ngSanitize', 'ui.router', 'colorpicker.module'])
   .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
       .state('home', {

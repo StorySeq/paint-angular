@@ -10,6 +10,14 @@ angular.module('paintAngular')
       height: 300
     };
 
+    $scope.toolSettings = {
+      lineWidth: 1,
+      lineColor: '#000000',
+      lineColorEnabled: true,
+      fillColor: '#000000',
+      fillColorEnabled: true
+    };
+
     $scope.history = {
       current: 0,
       images: [],
@@ -35,10 +43,8 @@ angular.module('paintAngular')
     };
 
     $scope.$on('canvas-directive-new-drawing', function(data, image) {
-      $timeout(function() {
-        addUndo(image);
-        history.current = history.images.length - 1;
-      });
+      addUndo(image);
+      history.current = history.images.length - 1;
     });
 
     $scope.$on('canvas-directive-empty-canvas', function(data, image) {

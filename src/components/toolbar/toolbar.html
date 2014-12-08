@@ -34,3 +34,24 @@
   <button class="btn btn-default" ng-disabled="history.current === 0" ng-click="goHistory('undo')"><i class="fa fa-undo"></i></button>
   <button class="btn btn-default" ng-disabled="history.current === history.images.length - 1" ng-click="goHistory('redo')"><i class="fa fa-repeat"></i></button>
 </div>
+<div>
+<div class="btn-group">
+  <div class="color-picker btn" ng-if="showLineColor">
+    <span class="input-group-addon">
+      <input type="checkbox" ng-model="options.lineColorEnabled">
+    </span>
+    <span class="input-group-addon" data-colorpicker ng-model="options.lineColor" ng-style="lineColorPickerStyle">
+      <i class="fa fa-square-o"></i>
+    </span>
+  </div>
+  <div class="color-picker btn" ng-if="showFillColor">
+    <span class="input-group-addon">
+      <input type="checkbox" ng-model="options.fillColorEnabled">
+    </span>
+    <span class="input-group-addon" data-colorpicker ng-model="options.fillColor" ng-style="fillColorPickerStyle">
+      <i class="fa fa-square"></i>
+    </span>
+  </div>
+  <select class="btn btn-default"  ng-if="showLineWidth" ng-model="options.lineWidth" ng-options="value for value in lineWidths"></select>
+</div>
+</div>
