@@ -2,12 +2,16 @@
 
 angular.module('paintAngular')
 .directive('canvasDirective', [
+  'touchEventFactory',
   'pencilService',
   'lineService',
   'rectangleService',
   'ellipseService',
   'eraserService',
-  function(pencilService, lineService, rectangleService, ellipseService, eraserService) {
+  function(
+    touchEventFactory, pencilService, lineService, rectangleService,
+    ellipseService, eraserService
+  ) {
     return {
       restrict: 'A',
       scope: {
@@ -115,11 +119,13 @@ angular.module('paintAngular')
               modeService = modeServices[mode](canvasLayers, scope.toolSettings);
 
           $canvas.on('mousedown touchstart', function(e) {
-
             canvasOffset = $canvas.offset();
+            e = touchEventFactory(e);
 
             modeService.start(canvasPageX(e), canvasPageY(e));
             $(document).on('mousemove touchmove', function(e) {
+              e.preventDefault();
+              e = touchEventFactory(e);
               modeService.move(canvasPageX(e), canvasPageY(e));
             })
             .on('mouseup touchend', function(e) {

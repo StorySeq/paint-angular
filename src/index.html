@@ -18,7 +18,7 @@
 
     <!-- build:css({.tmp,src}) styles/app.css -->
     <!-- inject:css -->
-    <link rel="stylesheet" href="../.tmp/app/index.css">
+    <link rel="stylesheet" href="../.tmp/app/paintangular.css">
     <!-- endinject -->
     <!-- endbuild -->
   </head>
@@ -63,13 +63,13 @@
     <!-- endbower -->
     <!-- endbuild -->
 
-    <script src="app/test-module.js"></script>
+    <script src="app/paintangular-testmodule.js"></script>
     <!-- build:js({.tmp,src}) scripts/app.js -->
     <script src="wPaint/rgbhex.min.js"></script>
     <script src="wPaint/shapes.min.js"></script>
+    <script src="app/paintangular.js"></script>
     <!-- inject:js -->
-    <script src="app/index.js"></script>
-    <script src="app/main/main.controller.js"></script>
+    <script src="app/paintangular-controller.js"></script>
     <script src="components/canvas/canvas-directive.js"></script>
     <script src="components/canvas/ellipse-service.js"></script>
     <script src="components/canvas/eraser-service.js"></script>
@@ -78,6 +78,7 @@
     <script src="components/canvas/rectangle-service.js"></script>
     <script src="components/canvas/shape-service.js"></script>
     <script src="components/helper/hexrgb-factory.js"></script>
+    <script src="components/helper/touchevent-factory.js"></script>
     <script src="components/navbar/navbar.controller.js"></script>
     <script src="components/toolbar/toolbar-directive.js"></script>
     <!-- endinject -->

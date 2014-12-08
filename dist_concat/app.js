@@ -3,7 +3,73 @@
 !function(){window.CanvasRenderingContext2D&&(CanvasRenderingContext2D.prototype.diamond=function(a,b,c,d){return a&&b&&c&&d?(this.beginPath(),this.moveTo(a+.5*c,b),this.lineTo(a,b+.5*d),this.lineTo(a+.5*c,b+d),this.lineTo(a+c,b+.5*d),this.lineTo(a+.5*c,b),this.closePath(),void 0):!0}),window.CanvasRenderingContext2D&&(CanvasRenderingContext2D.prototype.ellipse=function(a,b,c,d){if(!(a&&b&&c&&d))return!0;var e=.5522848,f=c/2*e,g=d/2*e,h=a+c,i=b+d,j=a+c/2,k=b+d/2;this.beginPath(),this.moveTo(a,k),this.bezierCurveTo(a,k-g,j-f,b,j,b),this.bezierCurveTo(j+f,b,h,k-g,h,k),this.bezierCurveTo(h,k+g,j+f,i,j,i),this.bezierCurveTo(j-f,i,a,k+g,a,k),this.closePath()}),window.CanvasRenderingContext2D&&(CanvasRenderingContext2D.prototype.hexagon=function(a,b,c,d){if(!(a&&b&&c&&d))return!0;var e=.225,f=1-e;this.beginPath(),this.moveTo(a+.5*c,b),this.lineTo(a,b+d*e),this.lineTo(a,b+d*f),this.lineTo(a+.5*c,b+d),this.lineTo(a+c,b+d*f),this.lineTo(a+c,b+d*e),this.lineTo(a+.5*c,b),this.closePath()}),window.CanvasRenderingContext2D&&(CanvasRenderingContext2D.prototype.pentagon=function(a,b,c,d){return a&&b&&c&&d?(this.beginPath(),this.moveTo(a+c/2,b),this.lineTo(a,b+.4*d),this.lineTo(a+.2*c,b+d),this.lineTo(a+.8*c,b+d),this.lineTo(a+c,b+.4*d),this.lineTo(a+c/2,b),this.closePath(),void 0):!0}),window.CanvasRenderingContext2D&&(CanvasRenderingContext2D.prototype.roundedRect=function(a,b,c,d,e){return a&&b&&c&&d?(e||(e=5),this.beginPath(),this.moveTo(a+e,b),this.lineTo(a+c-e,b),this.quadraticCurveTo(a+c,b,a+c,b+e),this.lineTo(a+c,b+d-e),this.quadraticCurveTo(a+c,b+d,a+c-e,b+d),this.lineTo(a+e,b+d),this.quadraticCurveTo(a,b+d,a,b+d-e),this.lineTo(a,b+e),this.quadraticCurveTo(a,b,a+e,b),this.closePath(),void 0):!0})}();
 'use strict';
 
-angular.module('paintAngular', ['ngTouch', 'ngSanitize', 'colorpicker.module']);
+angular.module('paintAngular', ['ngTouch', 'ngSanitize', 'ui.router', 'colorpicker.module']);
+
+'use strict';
+
+angular.module('paintAngular')
+.controller('PaintAngularController', [
+  '$scope',
+  '$timeout',
+  function ($scope, $timeout) {
+    $scope.canvasSettings = {
+      width: 500,
+      height: 300
+    };
+
+    $scope.toolSettings = {
+      lineWidth: 1,
+      lineColor: '#000000',
+      lineColorEnabled: true,
+      fillColor: '#000000',
+      fillColorEnabled: true
+    };
+
+    $scope.history = {
+      current: 0,
+      images: [],
+      max: 16,
+      emptyImage: null
+    };
+
+    var history = $scope.history;
+
+    var changeHistory = function() {
+      $scope.$broadcast('history-change', history.images[history.current]);
+    };
+
+    var addUndo = function (image) {
+      // delete future entries if user decides to draw after undo
+      if (history.current < history.images.length - 1) {
+        history.images.splice(history.current + 1, history.images.length);
+      }
+      history.images.push(image);
+      if (history.images.length > history.max) {
+        history.images = history.images.slice(1, history.images.length);
+      }
+    };
+
+    $scope.$on('canvas-directive-new-drawing', function(data, image) {
+      addUndo(image);
+      history.current = history.images.length - 1;
+    });
+
+    $scope.$on('canvas-directive-empty-canvas', function(data, image) {
+      history.emptyImage = image;
+      history.images.push(image);
+    });
+
+    $scope.$on('toolbar-directive-undo', function() {
+      --history.current;
+      changeHistory();
+    });
+
+    $scope.$on('toolbar-directive-redo', function() {
+      ++history.current;
+      changeHistory();
+    });
+  }
+]);
 
 "use strict";
 
@@ -611,72 +677,6 @@ angular.module('paintAngular')
   }
 ]);
 
-'use strict';
-
-angular.module('paintAngular')
-.controller('MainCtrl', [
-  '$scope',
-  '$timeout',
-  function ($scope, $timeout) {
-    $scope.canvasSettings = {
-      width: 500,
-      height: 300
-    };
-
-    $scope.toolSettings = {
-      lineWidth: 1,
-      lineColor: '#000000',
-      lineColorEnabled: true,
-      fillColor: '#000000',
-      fillColorEnabled: true
-    };
-
-    $scope.history = {
-      current: 0,
-      images: [],
-      max: 16,
-      emptyImage: null
-    };
-
-    var history = $scope.history;
-
-    var changeHistory = function() {
-      $scope.$broadcast('history-change', history.images[history.current]);
-    };
-
-    var addUndo = function (image) {
-      // delete future entries if user decides to draw after undo
-      if (history.current < history.images.length - 1) {
-        history.images.splice(history.current + 1, history.images.length);
-      }
-      history.images.push(image);
-      if (history.images.length > history.max) {
-        history.images = history.images.slice(1, history.images.length);
-      }
-    };
-
-    $scope.$on('canvas-directive-new-drawing', function(data, image) {
-      addUndo(image);
-      history.current = history.images.length - 1;
-    });
-
-    $scope.$on('canvas-directive-empty-canvas', function(data, image) {
-      history.emptyImage = image;
-      history.images.push(image);
-    });
-
-    $scope.$on('toolbar-directive-undo', function() {
-      --history.current;
-      changeHistory();
-    });
-
-    $scope.$on('toolbar-directive-redo', function() {
-      ++history.current;
-      changeHistory();
-    });
-  }
-]);
-
-angular.module("paintAngular").run(["$templateCache", function($templateCache) {$templateCache.put("app/main/main.html","<div class=\"container\"><div class=\"jumbotron text-center\"><div data-toolbar-directive=\"\" data-settings=\"canvasSettings\" data-history=\"history\" data-tool-settings=\"toolSettings\"></div><div data-settings=\"canvasSettings\" data-canvas-directive=\"\" data-tool-settings=\"toolSettings\"></div></div><hr></div>");
+angular.module("paintAngular").run(["$templateCache", function($templateCache) {$templateCache.put("app/paintangular.html","<div class=\"container\"><div class=\"jumbotron text-center\"><div data-toolbar-directive=\"\" data-settings=\"canvasSettings\" data-history=\"history\" data-tool-settings=\"toolSettings\"></div><div data-settings=\"canvasSettings\" data-canvas-directive=\"\" data-tool-settings=\"toolSettings\"></div></div><hr></div>");
 $templateCache.put("components/navbar/navbar.html","<nav class=\"navbar navbar-static-top navbar-inverse\" ng-controller=\"NavbarCtrl\"><div class=\"container-fluid\"><div class=\"navbar-header\"><a class=\"navbar-brand\" href=\"https://github.com/Swiip/generator-gulp-angular\"><span class=\"glyphicon glyphicon-home\"></span> Gulp Angular</a></div><div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-6\"><ul class=\"nav navbar-nav\"><li class=\"active\"><a ng-href=\"#\">Home</a></li><li><a ng-href=\"#\">About</a></li><li><a ng-href=\"#\">Contact</a></li></ul><ul class=\"nav navbar-nav navbar-right\"><li>Current date: {{ date | date:\'yyyy-MM-dd\' }}</li></ul></div></div></nav>");
 $templateCache.put("components/toolbar/toolbar.html","<div class=\"btn-group\"><button class=\"btn\" ng-click=\"activate(\'pencil\')\" ng-class=\"{\'btn-primary\': settings.mode == \'pencil\', \'btn-default\': settings.mode != \'pencil\'}\"><i class=\"fa fa-pencil\"></i></button> <button class=\"btn\" ng-click=\"activate(\'line\')\" ng-class=\"{\'btn-primary\': settings.mode == \'line\', \'btn-default\': settings.mode != \'line\'}\"><i class=\"fa fa-minus\"></i></button> <button class=\"btn\" ng-click=\"activate(\'rectangle\')\" ng-class=\"{\'btn-primary\': settings.mode == \'rectangle\', \'btn-default\': settings.mode != \'rectangle\'}\"><i class=\"fa fa-square-o\"></i></button> <button class=\"btn\" ng-click=\"activate(\'ellipse\')\" ng-class=\"{\'btn-primary\': settings.mode == \'ellipse\', \'btn-default\': settings.mode != \'ellipse\'}\"><i class=\"fa fa-circle-o\"></i></button> <button class=\"btn\" ng-click=\"activate(\'eraser\')\" ng-class=\"{\'btn-primary\': settings.mode == \'eraser\', \'btn-default\': settings.mode != \'eraser\'}\"><i class=\"fa fa-eraser\"></i></button></div><div class=\"btn-group\"><button class=\"btn btn-default\" ng-disabled=\"history.current === 0\" ng-click=\"goHistory(\'undo\')\"><i class=\"fa fa-undo\"></i></button> <button class=\"btn btn-default\" ng-disabled=\"history.current === history.images.length - 1\" ng-click=\"goHistory(\'redo\')\"><i class=\"fa fa-repeat\"></i></button></div><div><div class=\"btn-group\"><div class=\"color-picker btn\" ng-if=\"showLineColor\"><span class=\"input-group-addon\"><input type=\"checkbox\" ng-model=\"options.lineColorEnabled\"></span> <span class=\"input-group-addon\" data-colorpicker=\"\" ng-model=\"options.lineColor\" ng-style=\"lineColorPickerStyle\"><i class=\"fa fa-square-o\"></i></span></div><div class=\"color-picker btn\" ng-if=\"showFillColor\"><span class=\"input-group-addon\"><input type=\"checkbox\" ng-model=\"options.fillColorEnabled\"></span> <span class=\"input-group-addon\" data-colorpicker=\"\" ng-model=\"options.fillColor\" ng-style=\"fillColorPickerStyle\"><i class=\"fa fa-square\"></i></span></div><select class=\"btn btn-default\" ng-if=\"showLineWidth\" ng-model=\"options.lineWidth\" ng-options=\"value for value in lineWidths\"></select></div></div>");}]);

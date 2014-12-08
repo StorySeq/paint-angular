@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('paintAngular')
-.controller('MainCtrl', [
+.controller('PaintAngularController', [
   '$scope',
   '$timeout',
   function ($scope, $timeout) {

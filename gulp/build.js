@@ -7,7 +7,7 @@ var $ = require('gulp-load-plugins')({
 });
 
 gulp.task('styles', ['wiredep', 'injector:css:preprocessor'], function () {
-  return gulp.src(['src/app/index.scss', 'src/app/vendor.scss'])
+  return gulp.src(['src/app/paintangular.scss', 'src/app/vendor.scss'])
     .pipe($.sass({style: 'expanded'}))
     .on('error', function handleError(err) {
       console.error(err.toString());
@@ -18,10 +18,10 @@ gulp.task('styles', ['wiredep', 'injector:css:preprocessor'], function () {
 });
 
 gulp.task('injector:css:preprocessor', function () {
-  return gulp.src('src/app/index.scss')
+  return gulp.src('src/app/paintangular.scss')
     .pipe($.inject(gulp.src([
         'src/{app,components}/**/*.scss',
-        '!src/app/index.scss',
+        '!src/app/paintangular.scss',
         '!src/app/vendor.scss'
       ], {read: false}), {
       transform: function(filePath) {
@@ -61,7 +61,8 @@ gulp.task('injector:js', ['jshint', 'injector:css'], function () {
         'src/{app,components}/**/*.js',
         '!src/{app,components}/**/*.spec.js',
         '!src/{app,components}/**/*.mock.js',
-        '!src/app/test-module.js'
+        '!src/app/paintangular-testmodule.js',
+        '!src/app/paintangular.js'
       ], {read: false}), {
       ignorePath: 'src',
       addRootSlash: false
