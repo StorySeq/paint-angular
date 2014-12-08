@@ -11,7 +11,8 @@ angular.module('paintAngular')
         options: '=toolSettings'
       },
       templateUrl: 'components/toolbar/toolbar.html',
-      link: function(scope) {
+      link: function(scope, el) {
+        el.addClass('paintangular-toolbar');
         var maxLineWidths = 80,
             bits = {
               'lineColor': 1,
