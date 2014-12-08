@@ -104,6 +104,10 @@ angular.module('paintAngular')
           // turn off all previous event listeners
           $canvas.off();
 
+          if (!mode) {
+            return;
+          }
+
           if (!modeServices[mode]) {
             throw new Error('Unknown mode: ' + mode);
           }

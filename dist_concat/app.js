@@ -3,84 +3,7 @@
 !function(){window.CanvasRenderingContext2D&&(CanvasRenderingContext2D.prototype.diamond=function(a,b,c,d){return a&&b&&c&&d?(this.beginPath(),this.moveTo(a+.5*c,b),this.lineTo(a,b+.5*d),this.lineTo(a+.5*c,b+d),this.lineTo(a+c,b+.5*d),this.lineTo(a+.5*c,b),this.closePath(),void 0):!0}),window.CanvasRenderingContext2D&&(CanvasRenderingContext2D.prototype.ellipse=function(a,b,c,d){if(!(a&&b&&c&&d))return!0;var e=.5522848,f=c/2*e,g=d/2*e,h=a+c,i=b+d,j=a+c/2,k=b+d/2;this.beginPath(),this.moveTo(a,k),this.bezierCurveTo(a,k-g,j-f,b,j,b),this.bezierCurveTo(j+f,b,h,k-g,h,k),this.bezierCurveTo(h,k+g,j+f,i,j,i),this.bezierCurveTo(j-f,i,a,k+g,a,k),this.closePath()}),window.CanvasRenderingContext2D&&(CanvasRenderingContext2D.prototype.hexagon=function(a,b,c,d){if(!(a&&b&&c&&d))return!0;var e=.225,f=1-e;this.beginPath(),this.moveTo(a+.5*c,b),this.lineTo(a,b+d*e),this.lineTo(a,b+d*f),this.lineTo(a+.5*c,b+d),this.lineTo(a+c,b+d*f),this.lineTo(a+c,b+d*e),this.lineTo(a+.5*c,b),this.closePath()}),window.CanvasRenderingContext2D&&(CanvasRenderingContext2D.prototype.pentagon=function(a,b,c,d){return a&&b&&c&&d?(this.beginPath(),this.moveTo(a+c/2,b),this.lineTo(a,b+.4*d),this.lineTo(a+.2*c,b+d),this.lineTo(a+.8*c,b+d),this.lineTo(a+c,b+.4*d),this.lineTo(a+c/2,b),this.closePath(),void 0):!0}),window.CanvasRenderingContext2D&&(CanvasRenderingContext2D.prototype.roundedRect=function(a,b,c,d,e){return a&&b&&c&&d?(e||(e=5),this.beginPath(),this.moveTo(a+e,b),this.lineTo(a+c-e,b),this.quadraticCurveTo(a+c,b,a+c,b+e),this.lineTo(a+c,b+d-e),this.quadraticCurveTo(a+c,b+d,a+c-e,b+d),this.lineTo(a+e,b+d),this.quadraticCurveTo(a,b+d,a,b+d-e),this.lineTo(a,b+e),this.quadraticCurveTo(a,b,a+e,b),this.closePath(),void 0):!0})}();
 'use strict';
 
-angular.module('paintAngular', ['ngTouch', 'ngSanitize', 'ui.router', 'colorpicker.module'])
-  .config(["$stateProvider", "$urlRouterProvider", function ($stateProvider, $urlRouterProvider) {
-    $stateProvider
-      .state('home', {
-        url: '/',
-        templateUrl: 'app/main/main.html',
-        controller: 'MainCtrl'
-      });
-
-    $urlRouterProvider.otherwise('/');
-  }])
-;
-
-'use strict';
-
-angular.module('paintAngular')
-.controller('MainCtrl', [
-  '$scope',
-  '$timeout',
-  function ($scope, $timeout) {
-    $scope.canvasSettings = {
-      width: 500,
-      height: 300
-    };
-
-    $scope.toolSettings = {
-      lineWidth: 1,
-      lineColor: '#000000',
-      lineColorEnabled: true,
-      fillColor: '#000000',
-      fillColorEnabled: true
-    };
-
-    $scope.history = {
-      current: 0,
-      images: [],
-      max: 16,
-      emptyImage: null
-    };
-
-    var history = $scope.history;
-
-    var changeHistory = function() {
-      $scope.$broadcast('history-change', history.images[history.current]);
-    };
-
-    var addUndo = function (image) {
-      // delete future entries if user decides to draw after undo
-      if (history.current < history.images.length - 1) {
-        history.images.splice(history.current + 1, history.images.length);
-      }
-      history.images.push(image);
-      if (history.images.length > history.max) {
-        history.images = history.images.slice(1, history.images.length);
-      }
-    };
-
-    $scope.$on('canvas-directive-new-drawing', function(data, image) {
-      addUndo(image);
-      history.current = history.images.length - 1;
-    });
-
-    $scope.$on('canvas-directive-empty-canvas', function(data, image) {
-      history.emptyImage = image;
-      history.images.push(image);
-    });
-
-    $scope.$on('toolbar-directive-undo', function() {
-      --history.current;
-      changeHistory();
-    });
-
-    $scope.$on('toolbar-directive-redo', function() {
-      ++history.current;
-      changeHistory();
-    });
-  }
-]);
+angular.module('paintAngular', ['ngTouch', 'ngSanitize', 'colorpicker.module']);
 
 "use strict";
 
@@ -187,6 +110,10 @@ angular.module('paintAngular')
           var $canvas = canvasLayers['canvas'].$;
           // turn off all previous event listeners
           $canvas.off();
+
+          if (!mode) {
+            return;
+          }
 
           if (!modeServices[mode]) {
             throw new Error('Unknown mode: ' + mode);
@@ -640,7 +567,7 @@ angular.module('paintAngular')
               'line': bits.lineColor + bits.lineWidth,
               'rectangle': bits.lineColor + bits.fillColor + bits.lineWidth,
               'ellipse': bits.lineColor + bits.fillColor + bits.lineWidth,
-              'eraser': 0
+              'eraser': bits.lineWidth
             };
 
         scope.lineWidths = [];
@@ -681,6 +608,72 @@ angular.module('paintAngular')
         });
       }
     };
+  }
+]);
+
+'use strict';
+
+angular.module('paintAngular')
+.controller('MainCtrl', [
+  '$scope',
+  '$timeout',
+  function ($scope, $timeout) {
+    $scope.canvasSettings = {
+      width: 500,
+      height: 300
+    };
+
+    $scope.toolSettings = {
+      lineWidth: 1,
+      lineColor: '#000000',
+      lineColorEnabled: true,
+      fillColor: '#000000',
+      fillColorEnabled: true
+    };
+
+    $scope.history = {
+      current: 0,
+      images: [],
+      max: 16,
+      emptyImage: null
+    };
+
+    var history = $scope.history;
+
+    var changeHistory = function() {
+      $scope.$broadcast('history-change', history.images[history.current]);
+    };
+
+    var addUndo = function (image) {
+      // delete future entries if user decides to draw after undo
+      if (history.current < history.images.length - 1) {
+        history.images.splice(history.current + 1, history.images.length);
+      }
+      history.images.push(image);
+      if (history.images.length > history.max) {
+        history.images = history.images.slice(1, history.images.length);
+      }
+    };
+
+    $scope.$on('canvas-directive-new-drawing', function(data, image) {
+      addUndo(image);
+      history.current = history.images.length - 1;
+    });
+
+    $scope.$on('canvas-directive-empty-canvas', function(data, image) {
+      history.emptyImage = image;
+      history.images.push(image);
+    });
+
+    $scope.$on('toolbar-directive-undo', function() {
+      --history.current;
+      changeHistory();
+    });
+
+    $scope.$on('toolbar-directive-redo', function() {
+      ++history.current;
+      changeHistory();
+    });
   }
 ]);
 

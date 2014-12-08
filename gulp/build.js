@@ -60,7 +60,8 @@ gulp.task('injector:js', ['jshint', 'injector:css'], function () {
     .pipe($.inject(gulp.src([
         'src/{app,components}/**/*.js',
         '!src/{app,components}/**/*.spec.js',
-        '!src/{app,components}/**/*.mock.js'
+        '!src/{app,components}/**/*.mock.js',
+        '!src/app/test-module.js'
       ], {read: false}), {
       ignorePath: 'src',
       addRootSlash: false
