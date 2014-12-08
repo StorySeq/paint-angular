@@ -1,6 +1,6 @@
 {
   "name": "paint-angular",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "dependencies": {
     "jquery": "~1.11.1",
     "angular-touch": "~1.2.27",
