@@ -15,7 +15,7 @@
 .canvas-container {
   position: relative;
   width: 100%;
-  margin: 70px auto 20px; }
+  margin: 40px auto 20px; }
   .canvas-container .canvas {
     border: 1px solid; }
   .canvas-container canvas {
@@ -32,3 +32,6 @@ select.btn {
   margin-top: 11px;
   height: 30px;
   margin-left: 10px !important; }
+
+.paintangular-toolbar {
+  height: 50px; }

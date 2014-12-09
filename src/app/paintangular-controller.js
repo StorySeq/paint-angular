@@ -3,8 +3,7 @@
 angular.module('paintAngular')
 .controller('PaintAngularController', [
   '$scope',
-  '$timeout',
-  function ($scope, $timeout) {
+  function ($scope) {
     $scope.canvasSettings = {
       width: 500,
       height: 300
