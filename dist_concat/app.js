@@ -254,7 +254,7 @@ angular.module('paintAngular')
 
         return canvasSave.toDataURL();
       },
-      setImage: function (img, ctxType, resize, notUndo) {
+      setImage: function (img, resize) {
         if (!img) { return; }
 
         var myImage = null,
