@@ -23,8 +23,7 @@ angular.module('paintAngular')
         if (!scope.settings.width) { throw new Error('width missing'); }
         if (!scope.settings.height) { throw new Error('height missing'); }
 
-        var width = scope.settings.width,
-            height = scope.settings.height,
+        var dimensions = scope.settings,
             canvasLayers = {},
             canvasOffset,
             modeServices = {
@@ -35,8 +34,8 @@ angular.module('paintAngular')
               'eraser': eraserService
             };
 
-        el.width(width);
-        el.height(height);
+        el.width(dimensions.width);
+        el.height(dimensions.height);
 
         el.addClass('canvas-container');
 
@@ -52,8 +51,8 @@ angular.module('paintAngular')
 
           canvasLayers[name].$
           .attr('class', 'canvas' + (name ? '-' + name : ''))
-          .attr('width', width + 'px')
-          .attr('height', height + 'px');
+          .attr('width', dimensions.width + 'px')
+          .attr('height', dimensions.height + 'px');
 
           el.append(canvasLayers[name].$);
 
@@ -70,7 +69,7 @@ angular.module('paintAngular')
         // before transfering to main canvas
         createCanvas('temp').hide();
 
-        canvasService.init(canvasLayers, width, height);
+        canvasService.init(canvasLayers, dimensions);
 
         var canvasPageX = function(e) {
           return Math.floor(e.pageX - canvasOffset.left);

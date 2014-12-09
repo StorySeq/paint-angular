@@ -6,8 +6,7 @@ angular.module('paintAngular')
     var _canvasLayers = null,
         _listeners = {},
         _imageStretch = false,
-        _width = null,
-        _height = null,
+        _dimensions = null,
         _parentEl = null;
 
     function fire(event, params) {
@@ -27,8 +26,8 @@ angular.module('paintAngular')
 
       $(canvasSave)
       .css({display: 'none', position: 'absolute', left: 0, top: 0})
-      .attr('width', _width)
-      .attr('height', _height);
+      .attr('width', _dimensions.width)
+      .attr('height', _dimensions.height);
 
 
       if (withBg) { ctxSave.drawImage(_canvasLayers.bg.el, 0, 0); }
@@ -48,9 +47,9 @@ angular.module('paintAngular')
 
         if (!resize) {
           // get width/height
-          if (myImage.width > _width || myImage.height > _height || _imageStretch) {
-            xR = _width / myImage.width;
-            yR = _height / myImage.height;
+          if (myImage.width > _dimensions.width || myImage.height > _dimensions.height || _imageStretch) {
+            xR = _dimensions.width / myImage.width;
+            yR = _dimensions.height / myImage.height;
 
             ratio = xR < yR ? xR : yR;
 
@@ -59,23 +58,20 @@ angular.module('paintAngular')
           }
 
           // get left/top (centering)
-          x = (_width - w) / 2;
-          y = (_height - h) / 2;
+          x = (_dimensions.width - w) / 2;
+          y = (_dimensions.height - h) / 2;
         }
 
-        ctx.clearRect(0, 0, _width, _height);
+        ctx.clearRect(0, 0, _dimensions.width, _dimensions.height);
         ctx.drawImage(myImage, x, y, w, h);
-
-        // wtf?
-        // _this[ctxType + 'Resize'] = false;
       }
 
       ctx = canvasLayer.ctx;
 
       if (window.rgbHex(img)) {
-        ctx.clearRect(0, 0, _width, _height);
+        ctx.clearRect(0, 0, _dimensions.width, _dimensions.height);
         ctx.fillStyle = img;
-        ctx.rect(0, 0, _width, _height);
+        ctx.rect(0, 0, _dimensions.width, _dimensions.height);
         ctx.fill();
       }
       else {
@@ -85,11 +81,13 @@ angular.module('paintAngular')
       }
     }
 
+    /**
+     * public api
+     */
     return {
-      init: function(canvasLayers, width, height) {
+      init: function(canvasLayers, dimensions) {
         _canvasLayers = canvasLayers;
-        _width = width;
-        _height = height;
+        _dimensions = dimensions;
         _parentEl = _canvasLayers.canvas.$.parent();
         fire('initialized');
       },
@@ -114,17 +112,19 @@ angular.module('paintAngular')
         setImage(_canvasLayers.bg, image);
       },
 
-      resize: function () {
+      resize: function(width, height) {
         var bg = this.getBgImage(),
             image = this.getImage();
 
-        _width = _parentEl.width();
-        _height = _parentEl.height();
+        _parentEl.width(width);
+        _parentEl.height(height);
+        _dimensions.width = width;
+        _dimensions.height = height;
 
-        _canvasLayers.bg.el.width = _width;
-        _canvasLayers.bg.el.height = _height;
-        _canvasLayers.canvas.el.width = _width;
-        _canvasLayers.canvas.el.height = _height;
+        _canvasLayers.bg.el.width = _dimensions.width;
+        _canvasLayers.bg.el.height = _dimensions.height;
+        _canvasLayers.canvas.el.width = _dimensions.width;
+        _canvasLayers.canvas.el.height = _dimensions.height;
 
         setImage(_canvasLayers.bg, bg, true);
         setImage(_canvasLayers.canvas, image, true);
