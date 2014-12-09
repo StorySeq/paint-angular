@@ -1,6 +1,5 @@
 .browsehappy {
   margin: 0.2em 0;
-  background: #ccc;
   color: #000;
   padding: 0.2em 0; }
 
@@ -10,7 +9,8 @@
     width: 50px; }
 
 .jumbotron {
-  margin-top: 15px; }
+  margin-top: 15px;
+  background-color: transparent; }
 
 .canvas-container {
   position: relative;
