@@ -33,9 +33,6 @@ angular.module('paintAngular')
               'rectangle': rectangleService,
               'ellipse': ellipseService,
               'eraser': eraserService
-            },
-            ucFirst = function(string) {
-              return string.charAt(0).toUpperCase() + string.slice(1);
             };
 
         el.width(width);
@@ -48,29 +45,26 @@ angular.module('paintAngular')
         // for the tempCanvas we will be setting some extra attributes but don't won't matter
         // as they will be reset on mousedown anyway.
         function createCanvas(name) {
-          var newName = (name ? ucFirst(name) : ''),
-              canvasName = 'canvas' + newName;
+          canvasLayers[name] = {};
+          canvasLayers[name].el = document.createElement('canvas');
+          canvasLayers[name].ctx = canvasLayers[name].el.getContext('2d');
+          canvasLayers[name].$ = $(canvasLayers[name].el);
 
-          canvasLayers[canvasName] = {};
-          canvasLayers[canvasName].el = document.createElement('canvas');
-          canvasLayers[canvasName].ctx = canvasLayers[canvasName].el.getContext('2d');
-          canvasLayers[canvasName].$ = $(canvasLayers[canvasName].el);
-
-          canvasLayers[canvasName].$
+          canvasLayers[name].$
           .attr('class', 'canvas' + (name ? '-' + name : ''))
           .attr('width', width + 'px')
           .attr('height', height + 'px');
 
-          el.append(canvasLayers[canvasName].$);
+          el.append(canvasLayers[name].$);
 
-          return canvasLayers[canvasName].$;
+          return canvasLayers[name].$;
         }
 
         // create bg canvasLayers
         createCanvas('bg');
 
         // create drawing canvas
-        createCanvas('');
+        createCanvas('canvas');
 
         // create temp canvas for drawing shapes temporarily
         // before transfering to main canvas
@@ -126,7 +120,7 @@ angular.module('paintAngular')
         });
 
         scope.$on('history-change', function(data, image) {
-          canvasService.setImage(image, null, null);
+          canvasService.setImage(image);
         });
 
         scope.$emit('canvas-directive-empty-canvas', canvasService.getImage(false));

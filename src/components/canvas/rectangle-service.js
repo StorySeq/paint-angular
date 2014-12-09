@@ -5,7 +5,7 @@ angular.module('paintAngular')
   'shapeService',
   function(shapeService) {
     return function(canvasLayers, toolSettings) {
-      var ctxTemp = canvasLayers.canvasTemp.ctx,
+      var ctxTemp = canvasLayers.temp.ctx,
           optionDefaults = {
             'lineColor': '#000000',
             'fillColor': '#000000',

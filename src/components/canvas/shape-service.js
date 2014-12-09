@@ -7,7 +7,7 @@ angular.module('paintAngular')
       var canvasTempLeftOriginal, canvasTempTopOriginal,
           factor, canvasTempLeftNew, canvasTempTopNew,
           canvas = canvasLayers.canvas,
-          canvasTemp = canvasLayers.canvasTemp,
+          canvasTemp = canvasLayers.temp,
           defaultOptions = {
             fillColor: '#000000',
             lineColor: '#000000',
