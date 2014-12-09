@@ -34,9 +34,6 @@
   <button class="btn btn-default" ng-disabled="history.current === 0" ng-click="goHistory('undo')"><i class="fa fa-undo"></i></button>
   <button class="btn btn-default" ng-disabled="history.current === history.images.length - 1" ng-click="goHistory('redo')"><i class="fa fa-repeat"></i></button>
 </div>
-<div class="btn-group">
-  <button class="btn btn-default" ng-click="resize()"><i class="fa fa-compress"></i></button>
-</div>
 <div>
   <div class="btn-group">
     <div class="color-picker btn" ng-if="showLineColor">

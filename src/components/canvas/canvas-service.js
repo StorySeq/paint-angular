@@ -127,7 +127,7 @@ angular.module('paintAngular')
         _canvasLayers.canvas.el.height = _height;
 
         setImage(_canvasLayers.bg, bg, true);
-        setImage(_canvasLayers.image, image, true);
+        setImage(_canvasLayers.canvas, image, true);
       }
     };
   }
