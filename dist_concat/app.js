@@ -95,8 +95,7 @@ angular.module('paintAngular')
         if (!scope.settings.width) { throw new Error('width missing'); }
         if (!scope.settings.height) { throw new Error('height missing'); }
 
-        var width = scope.settings.width,
-            height = scope.settings.height,
+        var dimensions = scope.settings,
             canvasLayers = {},
             canvasOffset,
             modeServices = {
@@ -105,13 +104,10 @@ angular.module('paintAngular')
               'rectangle': rectangleService,
               'ellipse': ellipseService,
               'eraser': eraserService
-            },
-            ucFirst = function(string) {
-              return string.charAt(0).toUpperCase() + string.slice(1);
             };
 
-        el.width(width);
-        el.height(height);
+        el.width(dimensions.width);
+        el.height(dimensions.height);
 
         el.addClass('canvas-container');
 
@@ -120,35 +116,32 @@ angular.module('paintAngular')
         // for the tempCanvas we will be setting some extra attributes but don't won't matter
         // as they will be reset on mousedown anyway.
         function createCanvas(name) {
-          var newName = (name ? ucFirst(name) : ''),
-              canvasName = 'canvas' + newName;
+          canvasLayers[name] = {};
+          canvasLayers[name].el = document.createElement('canvas');
+          canvasLayers[name].ctx = canvasLayers[name].el.getContext('2d');
+          canvasLayers[name].$ = $(canvasLayers[name].el);
 
-          canvasLayers[canvasName] = {};
-          canvasLayers[canvasName].el = document.createElement('canvas');
-          canvasLayers[canvasName].ctx = canvasLayers[canvasName].el.getContext('2d');
-          canvasLayers[canvasName].$ = $(canvasLayers[canvasName].el);
-
-          canvasLayers[canvasName].$
+          canvasLayers[name].$
           .attr('class', 'canvas' + (name ? '-' + name : ''))
-          .attr('width', width + 'px')
-          .attr('height', height + 'px');
+          .attr('width', dimensions.width + 'px')
+          .attr('height', dimensions.height + 'px');
 
-          el.append(canvasLayers[canvasName].$);
+          el.append(canvasLayers[name].$);
 
-          return canvasLayers[canvasName].$;
+          return canvasLayers[name].$;
         }
 
         // create bg canvasLayers
         createCanvas('bg');
 
         // create drawing canvas
-        createCanvas('');
+        createCanvas('canvas');
 
         // create temp canvas for drawing shapes temporarily
         // before transfering to main canvas
         createCanvas('temp').hide();
 
-        canvasService.init(canvasLayers, width, height);
+        canvasService.init(canvasLayers, dimensions);
 
         var canvasPageX = function(e) {
           return Math.floor(e.pageX - canvasOffset.left);
@@ -198,7 +191,7 @@ angular.module('paintAngular')
         });
 
         scope.$on('history-change', function(data, image) {
-          canvasService.setImage(image, null, null);
+          canvasService.setImage(image);
         });
 
         scope.$emit('canvas-directive-empty-canvas', canvasService.getImage(false));
@@ -215,8 +208,8 @@ angular.module('paintAngular')
     var _canvasLayers = null,
         _listeners = {},
         _imageStretch = false,
-        _width = null,
-        _height = null;
+        _dimensions = null,
+        _parentEl = null;
 
     function fire(event, params) {
       var listeners = _listeners[event];
@@ -227,81 +220,118 @@ angular.module('paintAngular')
       }
     }
 
+    function getImage (canvasLayer, withBg) {
+      var canvasSave = document.createElement('canvas'),
+      ctxSave = canvasSave.getContext('2d');
+
+      withBg = withBg === false ? false : true;
+
+      $(canvasSave)
+      .css({display: 'none', position: 'absolute', left: 0, top: 0})
+      .attr('width', _dimensions.width)
+      .attr('height', _dimensions.height);
+
+
+      if (withBg) { ctxSave.drawImage(_canvasLayers.bg.el, 0, 0); }
+      ctxSave.drawImage(canvasLayer.el, 0, 0);
+
+      return canvasSave.toDataURL();
+    }
+
+    function setImage (canvasLayer, img, resize) {
+      if (!img) { return; }
+
+      var myImage = null,
+      ctx = '';
+
+      function loadImage() {
+        var ratio = 1, xR = 0, yR = 0, x = 0, y = 0, w = myImage.width, h = myImage.height;
+
+        if (!resize) {
+          // get width/height
+          if (myImage.width > _dimensions.width || myImage.height > _dimensions.height || _imageStretch) {
+            xR = _dimensions.width / myImage.width;
+            yR = _dimensions.height / myImage.height;
+
+            ratio = xR < yR ? xR : yR;
+
+            w = myImage.width * ratio;
+            h = myImage.height * ratio;
+          }
+
+          // get left/top (centering)
+          x = (_dimensions.width - w) / 2;
+          y = (_dimensions.height - h) / 2;
+        }
+
+        ctx.clearRect(0, 0, _dimensions.width, _dimensions.height);
+        ctx.drawImage(myImage, x, y, w, h);
+      }
+
+      ctx = canvasLayer.ctx;
+
+      if (window.rgbHex(img)) {
+        ctx.clearRect(0, 0, _dimensions.width, _dimensions.height);
+        ctx.fillStyle = img;
+        ctx.rect(0, 0, _dimensions.width, _dimensions.height);
+        ctx.fill();
+      }
+      else {
+        myImage = new Image();
+        myImage.src = img.toString();
+        $(myImage).load(loadImage);
+      }
+    }
+
+    /**
+     * public api
+     */
     return {
-      init: function(canvasLayers, width, height) {
+      init: function(canvasLayers, dimensions) {
         _canvasLayers = canvasLayers;
-        _width = width;
-        _height = height;
+        _dimensions = dimensions;
+        _parentEl = _canvasLayers.canvas.$.parent();
         fire('initialized');
       },
+
       isInitialized: function() {
         return _canvasLayers !== null;
       },
-      getImage: function (withBg) {
-        var canvasSave = document.createElement('canvas'),
-        ctxSave = canvasSave.getContext('2d');
 
-        withBg = withBg === false ? false : true;
-
-        $(canvasSave)
-        .css({display: 'none', position: 'absolute', left: 0, top: 0})
-        .attr('width', _width)
-        .attr('height', _height);
-
-
-        if (withBg) { ctxSave.drawImage(_canvasLayers.bg.el, 0, 0); }
-        ctxSave.drawImage(_canvasLayers.canvas.el, 0, 0);
-
-        return canvasSave.toDataURL();
+      getImage: function() {
+        return getImage(_canvasLayers.canvas);
       },
-      setImage: function (img, resize) {
-        if (!img) { return; }
 
-        var myImage = null,
-            ctx = '';
+      getBgImage: function() {
+        return getImage(_canvasLayers.bg);
+      },
 
-        function loadImage() {
-          var ratio = 1, xR = 0, yR = 0, x = 0, y = 0, w = myImage.width, h = myImage.height;
+      setImage: function(image) {
+        setImage(_canvasLayers.canvas, image);
+      },
 
-          if (!resize) {
-            // get width/height
-            if (myImage.width > _width || myImage.height > _height || _imageStretch) {
-              xR = _width / myImage.width;
-              yR = _height / myImage.height;
+      setBgImage: function(image) {
+        setImage(_canvasLayers.bg, image);
+      },
 
-              ratio = xR < yR ? xR : yR;
+      resize: function(width, height) {
+        var bg = this.getBgImage(),
+            image = this.getImage();
 
-              w = myImage.width * ratio;
-              h = myImage.height * ratio;
-            }
+        _parentEl.width(width);
+        _parentEl.height(height);
+        _dimensions.width = width;
+        _dimensions.height = height;
 
-            // get left/top (centering)
-            x = (_width - w) / 2;
-            y = (_height - h) / 2;
-          }
+        _canvasLayers.bg.el.width = _dimensions.width;
+        _canvasLayers.bg.el.height = _dimensions.height;
+        _canvasLayers.canvas.el.width = _dimensions.width;
+        _canvasLayers.canvas.el.height = _dimensions.height;
 
-          ctx.clearRect(0, 0, _width, _height);
-          ctx.drawImage(myImage, x, y, w, h);
-
-          // wtf?
-          // _this[ctxType + 'Resize'] = false;
-        }
-
-        ctx = _canvasLayers.canvas.ctx;
-
-        if (window.rgbHex(img)) {
-          ctx.clearRect(0, 0, _width, _height);
-          ctx.fillStyle = img;
-          ctx.rect(0, 0, _width, _height);
-          ctx.fill();
-        }
-        else {
-          myImage = new Image();
-          myImage.src = img.toString();
-          $(myImage).load(loadImage);
-        }
+        setImage(_canvasLayers.bg, bg, true);
+        setImage(_canvasLayers.canvas, image, true);
       }
-    }
+    };
   }
 ]);
 
@@ -312,7 +342,7 @@ angular.module('paintAngular')
   'shapeService',
   function(shapeService) {
     return function(canvasLayers, toolSettings) {
-      var ctxTemp = canvasLayers.canvasTemp.ctx,
+      var ctxTemp = canvasLayers.temp.ctx,
           optionDefaults = {
             'lineColor': '#000000',
             'fillColor': '#000000',
@@ -380,7 +410,7 @@ angular.module('paintAngular')
   'shapeService',
   function(shapeService) {
     return function(canvasLayers, toolSettings) {
-      var ctxTemp = canvasLayers.canvasTemp.ctx,
+      var ctxTemp = canvasLayers.temp.ctx,
           optionDefaults = {
             'lineColor': '#000000',
             'fillColor': '#000000',
@@ -478,7 +508,7 @@ angular.module('paintAngular')
   'shapeService',
   function(shapeService) {
     return function(canvasLayers, toolSettings) {
-      var ctxTemp = canvasLayers.canvasTemp.ctx,
+      var ctxTemp = canvasLayers.temp.ctx,
           optionDefaults = {
             'lineColor': '#000000',
             'fillColor': '#000000',
@@ -519,7 +549,7 @@ angular.module('paintAngular')
       var canvasTempLeftOriginal, canvasTempTopOriginal,
           factor, canvasTempLeftNew, canvasTempTopNew,
           canvas = canvasLayers.canvas,
-          canvasTemp = canvasLayers.canvasTemp,
+          canvasTemp = canvasLayers.temp,
           defaultOptions = {
             fillColor: '#000000',
             lineColor: '#000000',
