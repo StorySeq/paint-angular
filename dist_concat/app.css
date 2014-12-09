@@ -15,9 +15,8 @@
 .canvas-container {
   position: relative;
   width: 100%;
-  margin: 40px auto 20px; }
-  .canvas-container .canvas {
-    border: 1px solid; }
+  margin: 40px auto 20px;
+  border: 1px solid; }
   .canvas-container canvas {
     position: absolute;
     top: 0px;
