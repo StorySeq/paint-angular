@@ -1,46 +1,31 @@
-.browsehappy {
-  margin: 0.2em 0;
-  color: #000;
-  padding: 0.2em 0;
-}
-
-.thumbnail {
-  height: 200px;
-
-  img.pull-right {
-    width: 50px;
+.paint-angular {
+  .jumbotron {
+    margin-top: 15px;
+    background-color: transparent;
   }
-}
 
-.jumbotron {
-  margin-top: 15px;
-  background-color: transparent;
-}
+  .canvas-container {
+    position: relative;
+    width: 100%;
+    margin: 40px auto 20px;
+    border: 1px solid;
 
-.canvas-container {
-  position: relative;
-  width: 100%;
-  margin: 40px auto 20px;
-  border: 1px solid;
-
-  canvas {
-    position: absolute;
-    top: 0px;
-    left: 0px;
+    canvas {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+    }
   }
-}
+  .color-picker {
+    display: inline-block; width: 80px; margin-top: 5px;
+  }
+  select.btn {
+    margin-top: 11px;
+    height: 30px;
+    margin-left: 10px !important;
+  }
 
-.color-picker {
-  display: inline-block; width: 80px; margin-top: 5px;
-}
-
-select.btn {
-  margin-top: 11px;
-  height: 30px;
-  margin-left: 10px !important;
-}
-
-
-.paintangular-toolbar {
-  height: 50px;
+  .paintangular-toolbar {
+    height: 50px;
+  }
 }
