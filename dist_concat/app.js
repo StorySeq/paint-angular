@@ -278,6 +278,7 @@ angular.module('paintAngular')
       }
       else {
         myImage = new Image();
+        myImage.setAttribute('crossOrigin', 'anonymous');
         myImage.src = img.toString();
         $(myImage).load(loadImage);
       }
