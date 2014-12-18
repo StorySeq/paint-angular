@@ -1,6 +1,7 @@
 /*! rgbHex - v1.1.2 - 2013-09-27 */window.rgbHex=function(){function a(a){return!isNaN(parseFloat(a))&&isFinite(a)}function b(a){return a.replace(/^\s+|\s+$/g,"")}function c(c){return c=b(c),a(c)&&c>=0&&255>=c}function d(a){return/^[0-9a-f]{3}$|^[0-9a-f]{6}$/i.test(b(a))}function e(a){return a=parseInt(a,10).toString(16),1===a.length?"0"+a:a}function f(a){return parseInt(a,16).toString()}function g(b){return b=b.split(","),(3===b.length||4===b.length)&&c(b[0])&&c(b[1])&&c(b[2])?4!==b.length||a(b[3])?"#"+e(b[0]).toUpperCase()+e(b[1]).toUpperCase()+e(b[2]).toUpperCase():null:null}function h(a){return d(a)?(3===a.length&&(a=a.charAt(0)+a.charAt(0)+a.charAt(1)+a.charAt(1)+a.charAt(2)+a.charAt(2)),"rgb("+f(a.substr(0,2))+","+f(a.substr(2,2))+","+f(a.substr(4,2))+")"):void 0}function i(a){return a.replace(/\s/g,"")}return function(a){if(!a)return null;var c=null,d=/^rgba?\((.*)\);?$/,e=/^#/;return a=b(a.toString()),"transparent"===a||"rgba(0,0,0,0)"===i(a)?"transparent":d.test(a)?g(a.match(d)[1]):e.test(a)?h(a.split("#").reverse()[0]):(c=a.split(","),1===c.length?h(a):3===c.length||4===c.length?g(a):void 0)}}(),jQuery&&jQuery.extend({rgbHex:function(a){return window.rgbHex(a)}});
 
 !function(){window.CanvasRenderingContext2D&&(CanvasRenderingContext2D.prototype.diamond=function(a,b,c,d){return a&&b&&c&&d?(this.beginPath(),this.moveTo(a+.5*c,b),this.lineTo(a,b+.5*d),this.lineTo(a+.5*c,b+d),this.lineTo(a+c,b+.5*d),this.lineTo(a+.5*c,b),this.closePath(),void 0):!0}),window.CanvasRenderingContext2D&&(CanvasRenderingContext2D.prototype.ellipse=function(a,b,c,d){if(!(a&&b&&c&&d))return!0;var e=.5522848,f=c/2*e,g=d/2*e,h=a+c,i=b+d,j=a+c/2,k=b+d/2;this.beginPath(),this.moveTo(a,k),this.bezierCurveTo(a,k-g,j-f,b,j,b),this.bezierCurveTo(j+f,b,h,k-g,h,k),this.bezierCurveTo(h,k+g,j+f,i,j,i),this.bezierCurveTo(j-f,i,a,k+g,a,k),this.closePath()}),window.CanvasRenderingContext2D&&(CanvasRenderingContext2D.prototype.hexagon=function(a,b,c,d){if(!(a&&b&&c&&d))return!0;var e=.225,f=1-e;this.beginPath(),this.moveTo(a+.5*c,b),this.lineTo(a,b+d*e),this.lineTo(a,b+d*f),this.lineTo(a+.5*c,b+d),this.lineTo(a+c,b+d*f),this.lineTo(a+c,b+d*e),this.lineTo(a+.5*c,b),this.closePath()}),window.CanvasRenderingContext2D&&(CanvasRenderingContext2D.prototype.pentagon=function(a,b,c,d){return a&&b&&c&&d?(this.beginPath(),this.moveTo(a+c/2,b),this.lineTo(a,b+.4*d),this.lineTo(a+.2*c,b+d),this.lineTo(a+.8*c,b+d),this.lineTo(a+c,b+.4*d),this.lineTo(a+c/2,b),this.closePath(),void 0):!0}),window.CanvasRenderingContext2D&&(CanvasRenderingContext2D.prototype.roundedRect=function(a,b,c,d,e){return a&&b&&c&&d?(e||(e=5),this.beginPath(),this.moveTo(a+e,b),this.lineTo(a+c-e,b),this.quadraticCurveTo(a+c,b,a+c,b+e),this.lineTo(a+c,b+d-e),this.quadraticCurveTo(a+c,b+d,a+c-e,b+d),this.lineTo(a+e,b+d),this.quadraticCurveTo(a,b+d,a,b+d-e),this.lineTo(a,b+e),this.quadraticCurveTo(a,b,a+e,b),this.closePath(),void 0):!0})}();
+!function(){window.CanvasRenderingContext2D&&(CanvasRenderingContext2D.prototype.fillArea=function(a,b,c){function d(a){return{r:p[a],g:p[a+1],b:p[a+2],a:p[a+3]}}function e(a){p[a]=c.r,p[a+1]=c.g,p[a+2]=c.b,p[a+3]=c.a}function f(a){return g.r===a.r&&g.g===a.g&&g.b===a.b&&g.a===a.a}if(!a||!b||!c)return!0;var g,h,i,j,k,l,m=this.canvas.width,n=this.canvas.height,o=this.getImageData(0,0,m,n),p=o.data,q=[[a,b]];if(g=d(4*(b*m+a)),l=this.canvas.style.color,this.canvas.style.color=c,c=this.canvas.style.color.match(/^rgba?\((.*)\);?$/)[1].split(","),this.canvas.style.color=l,c={r:parseInt(c[0],10),g:parseInt(c[1],10),b:parseInt(c[2],10),a:parseInt(c[3]||255,10)},f(c))return!0;for(;q.length;){for(h=q.pop(),i=4*(h[1]*m+h[0]);h[1]-->=0&&f(d(i));)i-=4*m;for(i+=4*m,++h[1],j=!1,k=!1;h[1]++<n-1&&f(d(i));)e(i),h[0]>0&&(f(d(i-4))?j||(q.push([h[0]-1,h[1]]),j=!0):j&&(j=!1)),h[0]<m-1&&(f(d(i+4))?k||(q.push([h[0]+1,h[1]]),k=!0):k&&(k=!1)),i+=4*m}this.putImageData(o,0,0)})}();
 'use strict';
 
 angular.module('paintAngular', ['ngTouch', 'ngSanitize', 'ui.router', 'colorpicker.module']);
@@ -81,9 +82,10 @@ angular.module('paintAngular')
   'rectangleService',
   'ellipseService',
   'eraserService',
+  'fillService',
   function(
     touchEventFactory, canvasService, pencilService, lineService, rectangleService,
-    ellipseService, eraserService
+    ellipseService, eraserService, fillService
   ) {
     return {
       restrict: 'A',
@@ -103,7 +105,8 @@ angular.module('paintAngular')
               'line': lineService,
               'rectangle': rectangleService,
               'ellipse': ellipseService,
-              'eraser': eraserService
+              'eraser': eraserService,
+              'fill': fillService
             };
 
         el.width(dimensions.width);
@@ -407,6 +410,34 @@ angular.module('paintAngular')
 'use strict';
 
 angular.module('paintAngular')
+.service('fillService', [
+  function() {
+    return function(canvasLayers, toolSettings) {
+      var ctx = canvasLayers.canvas.ctx,
+      optionDefaults = {
+        'fillColor': '#000000'
+      },
+      options = {};
+
+      return {
+        start: function (pageX, pageY) {
+          options = _.merge({}, optionDefaults, toolSettings);
+          ctx.fillArea(pageX, pageY, options.fillColor);
+        },
+
+        move: function (pageX, pageY) {
+        },
+
+        stop: function (pageX, pageY) {
+        }
+      };
+    };
+  }
+]);
+
+'use strict';
+
+angular.module('paintAngular')
 .service('lineService', [
   'shapeService',
   function(shapeService) {
@@ -697,7 +728,8 @@ angular.module('paintAngular')
               'line': bits.lineColor + bits.lineWidth,
               'rectangle': bits.lineColor + bits.fillColor + bits.lineWidth,
               'ellipse': bits.lineColor + bits.fillColor + bits.lineWidth,
-              'eraser': bits.lineWidth
+              'eraser': bits.lineWidth,
+              'fill': bits.fillColor
             };
 
         scope.lineWidths = [];
@@ -743,4 +775,4 @@ angular.module('paintAngular')
 
 angular.module("paintAngular").run(["$templateCache", function($templateCache) {$templateCache.put("app/paintangular.html","<div class=\"paint-angular\"><div class=\"container\"><div class=\"jumbotron text-center\"><div data-toolbar-directive=\"\" data-settings=\"canvasSettings\" data-history=\"history\" data-tool-settings=\"toolSettings\"></div><div data-settings=\"canvasSettings\" data-canvas-directive=\"\" data-tool-settings=\"toolSettings\"></div></div><hr></div></div>");
 $templateCache.put("components/navbar/navbar.html","<nav class=\"navbar navbar-static-top navbar-inverse\" ng-controller=\"NavbarCtrl\"><div class=\"container-fluid\"><div class=\"navbar-header\"><a class=\"navbar-brand\" href=\"https://github.com/Swiip/generator-gulp-angular\"><span class=\"glyphicon glyphicon-home\"></span> Gulp Angular</a></div><div class=\"collapse navbar-collapse\" id=\"bs-example-navbar-collapse-6\"><ul class=\"nav navbar-nav\"><li class=\"active\"><a ng-href=\"#\">Home</a></li><li><a ng-href=\"#\">About</a></li><li><a ng-href=\"#\">Contact</a></li></ul><ul class=\"nav navbar-nav navbar-right\"><li>Current date: {{ date | date:\'yyyy-MM-dd\' }}</li></ul></div></div></nav>");
-$templateCache.put("components/toolbar/toolbar.html","<div class=\"btn-group\"><button class=\"btn\" ng-click=\"activate(\'pencil\')\" ng-class=\"{\'btn-primary\': settings.mode == \'pencil\', \'btn-default\': settings.mode != \'pencil\'}\"><i class=\"fa fa-pencil\"></i></button> <button class=\"btn\" ng-click=\"activate(\'line\')\" ng-class=\"{\'btn-primary\': settings.mode == \'line\', \'btn-default\': settings.mode != \'line\'}\"><i class=\"fa fa-minus\"></i></button> <button class=\"btn\" ng-click=\"activate(\'rectangle\')\" ng-class=\"{\'btn-primary\': settings.mode == \'rectangle\', \'btn-default\': settings.mode != \'rectangle\'}\"><i class=\"fa fa-square-o\"></i></button> <button class=\"btn\" ng-click=\"activate(\'ellipse\')\" ng-class=\"{\'btn-primary\': settings.mode == \'ellipse\', \'btn-default\': settings.mode != \'ellipse\'}\"><i class=\"fa fa-circle-o\"></i></button> <button class=\"btn\" ng-click=\"activate(\'eraser\')\" ng-class=\"{\'btn-primary\': settings.mode == \'eraser\', \'btn-default\': settings.mode != \'eraser\'}\"><i class=\"fa fa-eraser\"></i></button></div><div class=\"btn-group\"><button class=\"btn btn-default\" ng-disabled=\"history.current === 0\" ng-click=\"goHistory(\'undo\')\"><i class=\"fa fa-undo\"></i></button> <button class=\"btn btn-default\" ng-disabled=\"history.current === history.images.length - 1\" ng-click=\"goHistory(\'redo\')\"><i class=\"fa fa-repeat\"></i></button></div><div><div class=\"btn-group\"><div class=\"color-picker btn\" ng-if=\"showLineColor\"><span class=\"input-group-addon\"><input type=\"checkbox\" ng-model=\"options.lineColorEnabled\"></span> <span class=\"input-group-addon\" data-colorpicker=\"\" ng-model=\"options.lineColor\" ng-style=\"lineColorPickerStyle\"><i class=\"fa fa-square-o\"></i></span></div><div class=\"color-picker btn\" ng-if=\"showFillColor\"><span class=\"input-group-addon\"><input type=\"checkbox\" ng-model=\"options.fillColorEnabled\"></span> <span class=\"input-group-addon\" data-colorpicker=\"\" ng-model=\"options.fillColor\" ng-style=\"fillColorPickerStyle\"><i class=\"fa fa-square\"></i></span></div><select class=\"btn btn-default\" ng-if=\"showLineWidth\" ng-model=\"options.lineWidth\" ng-options=\"value for value in lineWidths\"></select></div></div>");}]);
+$templateCache.put("components/toolbar/toolbar.html","<div class=\"btn-group\"><button class=\"btn\" ng-click=\"activate(\'pencil\')\" ng-class=\"{\'btn-primary\': settings.mode == \'pencil\', \'btn-default\': settings.mode != \'pencil\'}\"><i class=\"fa fa-pencil\"></i></button> <button class=\"btn\" ng-click=\"activate(\'line\')\" ng-class=\"{\'btn-primary\': settings.mode == \'line\', \'btn-default\': settings.mode != \'line\'}\"><i class=\"fa fa-minus\"></i></button> <button class=\"btn\" ng-click=\"activate(\'rectangle\')\" ng-class=\"{\'btn-primary\': settings.mode == \'rectangle\', \'btn-default\': settings.mode != \'rectangle\'}\"><i class=\"fa fa-square-o\"></i></button> <button class=\"btn\" ng-click=\"activate(\'ellipse\')\" ng-class=\"{\'btn-primary\': settings.mode == \'ellipse\', \'btn-default\': settings.mode != \'ellipse\'}\"><i class=\"fa fa-circle-o\"></i></button> <button class=\"btn\" ng-click=\"activate(\'eraser\')\" ng-class=\"{\'btn-primary\': settings.mode == \'eraser\', \'btn-default\': settings.mode != \'eraser\'}\"><i class=\"fa fa-eraser\"></i></button> <button class=\"btn\" ng-click=\"activate(\'fill\')\" ng-class=\"{\'btn-primary\': settings.mode == \'fill\', \'btn-default\': settings.mode != \'fill\'}\"><i class=\"fa fa-pencil-square\"></i></button></div><div class=\"btn-group\"><button class=\"btn btn-default\" ng-disabled=\"history.current === 0\" ng-click=\"goHistory(\'undo\')\"><i class=\"fa fa-undo\"></i></button> <button class=\"btn btn-default\" ng-disabled=\"history.current === history.images.length - 1\" ng-click=\"goHistory(\'redo\')\"><i class=\"fa fa-repeat\"></i></button></div><div><div class=\"btn-group\"><div class=\"color-picker btn\" ng-if=\"showLineColor\"><span class=\"input-group-addon\"><input type=\"checkbox\" ng-model=\"options.lineColorEnabled\"></span> <span class=\"input-group-addon\" data-colorpicker=\"\" ng-model=\"options.lineColor\" ng-style=\"lineColorPickerStyle\"><i class=\"fa fa-square-o\"></i></span></div><div class=\"color-picker btn\" ng-if=\"showFillColor\"><span class=\"input-group-addon\"><input type=\"checkbox\" ng-model=\"options.fillColorEnabled\"></span> <span class=\"input-group-addon\" data-colorpicker=\"\" ng-model=\"options.fillColor\" ng-style=\"fillColorPickerStyle\"><i class=\"fa fa-square\"></i></span></div><select class=\"btn btn-default\" ng-if=\"showLineWidth\" ng-model=\"options.lineWidth\" ng-options=\"value for value in lineWidths\"></select></div></div>");}]);
