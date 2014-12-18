@@ -9,9 +9,10 @@ angular.module('paintAngular')
   'rectangleService',
   'ellipseService',
   'eraserService',
+  'fillService',
   function(
     touchEventFactory, canvasService, pencilService, lineService, rectangleService,
-    ellipseService, eraserService
+    ellipseService, eraserService, fillService
   ) {
     return {
       restrict: 'A',
@@ -31,7 +32,8 @@ angular.module('paintAngular')
               'line': lineService,
               'rectangle': rectangleService,
               'ellipse': ellipseService,
-              'eraser': eraserService
+              'eraser': eraserService,
+              'fill': fillService
             };
 
         el.width(dimensions.width);

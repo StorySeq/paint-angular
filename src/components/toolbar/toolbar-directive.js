@@ -24,7 +24,8 @@ angular.module('paintAngular')
               'line': bits.lineColor + bits.lineWidth,
               'rectangle': bits.lineColor + bits.fillColor + bits.lineWidth,
               'ellipse': bits.lineColor + bits.fillColor + bits.lineWidth,
-              'eraser': bits.lineWidth
+              'eraser': bits.lineWidth,
+              'fill': bits.fillColor
             };
 
         scope.lineWidths = [];
